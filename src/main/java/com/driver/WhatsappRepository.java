@@ -75,12 +75,6 @@ public class WhatsappRepository {
     }
 
 
-    //Error:  testSendMultipleMessages_Success  Time elapsed: 0.004 s  <<< ERROR!
-    //java.lang.NullPointerException
-
-//    Error:  testSendMessage_Success  Time elapsed: 0.01 s  <<< ERROR!
-//    java.lang.NullPointerException
-
     public int sendMessage(Message message, User sender, Group group) throws Exception{
 
         if(adminMap.containsKey(group)){
@@ -115,48 +109,9 @@ public class WhatsappRepository {
         }
         throw new Exception("Group does not exist");
 
-//        int finalNumberOfMessageInGroup = 0;
-//
-//        if(!groupUserMap.containsKey(group)){
-//            throw new GroupDoesNotExistException();
-//        }
-//            List<User> listOfUser = groupUserMap.get(group);
-//
-//
-//            if(!listOfUser.contains(sender)){
-//                throw new SenderNotMemberException();
-//            }
-//            // if group exists and sender is a member of group
-//
-//                senderMap.put(message,sender);// message add in the map of sender
-//                List<Message> messageList = groupMessageMap.get(group);
-//                messageList.add(message);
-//                finalNumberOfMessageInGroup = messageList.size();
-//                groupMessageMap.put(group,messageList);
-////            }
-////        }
-//      return finalNumberOfMessageInGroup;
     }
 
     public String changeAdmin(User approver, User user, Group group) throws Exception {
-
-//        if(!groupUserMap.containsKey(group)){//if group is not exist
-//            throw new GroupDoesNotExistException();
-//        } else if (groupUserMap.containsKey(group)) {
-//
-//            if(!adminMap.containsKey(group)){//if the approver is not the current admin of the group
-//                throw new ApproverNotAdminException();
-//            }
-//
-//            List<User> listOfUser = groupUserMap.get(group);
-//            if(!listOfUser.contains(user)){//if the user is not a part of the group
-//                throw new UserNotMemberException();
-//            }else{// if group exists and  is a member of group
-//               adminMap.put(group,user);
-//            }
-//
-//        }
-
 
         if(groupUserMap.containsKey(group)){
             if(adminMap.containsKey(group)){
@@ -173,7 +128,7 @@ public class WhatsappRepository {
         throw new Exception("Group does not exist");
     }
 
-    public int removeUser(User user) {
+    public int removeUser(User user) throws Exception {
         //This is a bonus problem and does not contain any marks
         //A user belongs to exactly one group
         //If user is not found in any group, throw "User not found" exception
@@ -181,19 +136,49 @@ public class WhatsappRepository {
         //If user is not the admin, remove the user from the group, remove all its messages from all the databases, and update relevant attributes accordingly.
         //If user is removed successfully, return (the updated number of users in the group + the updated number of messages in group + the updated number of overall messages)
 
-        // Boolean flag = false;
-
-//        for(Group group : groupUserMap.keySet()){
+//        private HashMap<Group, List<User>> groupUserMap;
+//        private HashMap<Group, List<Message>> groupMessageMap;
+//        private HashMap<Message, User> senderMap;
 //
-//            List<User> userList = groupUserMap.get(group);
-//            if(userList.contains(user)){
-//                flag = true;
-//                if(adminMap.containsKey(group))
-//            }
 
-//        }
-//
-        return 0;
+        Boolean flag = false;
+
+        List<Message> messageList = new ArrayList<>();
+        for (Message message : senderMap.keySet()){
+            if (senderMap.get(message).equals(user)){
+                messageList.add(message);
+                senderMap.remove(message);
+            }
+        }
+
+        Group userGroup = null;
+
+        for(Group group : groupUserMap.keySet()){
+
+            List<User> userList = groupUserMap.get(group);
+            if(userList.contains(user)){
+                flag = true;
+                if(adminMap.containsKey(group)){
+                    throw new Exception("Cannot remove admin");
+                }
+                userGroup = group;
+                userList.remove(user);
+
+            }
+        }
+        if (false == false){
+            throw new Exception("User not found");
+        }
+
+        List<Message> messages = groupMessageMap.get(userGroup);
+        for (Message message : messageList){
+            if (messages.contains(message)){
+                messages.remove(message);
+            }
+        }
+
+        int ans = groupUserMap.get(userGroup).size() + groupMessageMap.get(userGroup).size() + senderMap.size();
+        return ans;
     }
 
     public String findMessage(Date start, Date end, int k) {

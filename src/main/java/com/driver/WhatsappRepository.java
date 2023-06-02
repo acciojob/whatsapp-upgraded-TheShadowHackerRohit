@@ -147,6 +147,10 @@ public class WhatsappRepository {
         for (Message message : senderMap.keySet()){
             if (senderMap.get(message).equals(user)){
                 messageList.add(message);
+            }
+        }
+        for (Message message : messageList){
+            if (senderMap.containsKey(message)){
                 senderMap.remove(message);
             }
         }
@@ -155,12 +159,13 @@ public class WhatsappRepository {
 
         for(Group group : groupUserMap.keySet()){
 
+            if(adminMap.get(group).equals(user)){
+                throw new Exception("Cannot remove admin");
+            }
             List<User> userList = groupUserMap.get(group);
             if(userList.contains(user)){
                 flag = true;
-                if(adminMap.containsKey(group)){
-                    throw new Exception("Cannot remove admin");
-                }
+
                 userGroup = group;
                 userList.remove(user);
 

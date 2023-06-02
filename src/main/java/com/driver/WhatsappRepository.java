@@ -136,10 +136,6 @@ public class WhatsappRepository {
         //If user is not the admin, remove the user from the group, remove all its messages from all the databases, and update relevant attributes accordingly.
         //If user is removed successfully, return (the updated number of users in the group + the updated number of messages in group + the updated number of overall messages)
 
-//        private HashMap<Group, List<User>> groupUserMap;
-//        private HashMap<Group, List<Message>> groupMessageMap;
-//        private HashMap<Message, User> senderMap;
-//
 
         Boolean flag = false;
 
@@ -185,12 +181,48 @@ public class WhatsappRepository {
         return ans;
     }
 
-    public String findMessage(Date start, Date end, int k) {
+    public String findMessage(Date start, Date end, int k) throws Exception {
         //This is a bonus problem and does not contain any marks
         // Find the Kth the latest message between start and end (excluding start and end)
         // If the number of messages between given time is less than K, throw "K is greater than the number of messages" exception
 
-        return "rohit";
+        List<Message> messageList = new ArrayList<>();
 
+        for (Message message : senderMap.keySet()){
+            Date time = message.getTimestamp();
+            if (start.before(time) && end.after(time)){
+                messageList.add(message);
+            }
+        }
+        if (messageList.size() < k){
+            throw  new Exception("K is greater than the number of messages");
+        }
+
+        Map<Date , Message> hm = new HashMap<>();
+
+        for (Message message : messageList){
+            hm.put(message.getTimestamp(),message);
+        }
+
+        List<Date> dateList = new ArrayList<>(hm.keySet());
+
+        Collections.sort(dateList, new sortCompare());
+
+        Date date = dateList.get(k-1);
+        String ans = hm.get(date).getContent();
+        return ans;
+
+    }
+
+
+    class sortCompare implements Comparator<Date>
+    {
+        @Override
+        // Method of this class
+        public int compare(Date a, Date b)
+        {
+            /* Returns sorted data in Descending order */
+            return b.compareTo(a);
+        }
     }
 }

@@ -165,13 +165,12 @@ public class WhatsappRepository {
             List<User> userList = groupUserMap.get(group);
             if(userList.contains(user)){
                 flag = true;
-
                 userGroup = group;
                 userList.remove(user);
 
             }
         }
-        if (false == false){
+        if (flag == false){
             throw new Exception("User not found");
         }
 
